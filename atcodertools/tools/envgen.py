@@ -21,7 +21,7 @@ from atcodertools.common.logging import logger
 from atcodertools.config.config import Config
 from atcodertools.constprediction.constants_prediction import predict_constants
 from atcodertools.fileutils.create_contest_file import create_examples, \
-    create_code
+    create_code, _make_text_file
 from atcodertools.fmtprediction.models.format_prediction_result import FormatPredictionResult
 from atcodertools.fmtprediction.predict_format import NoPredictionResultError, \
     MultiplePredictionResultsError, predict_format
@@ -143,6 +143,9 @@ def prepare_procedure(atcoder_client: AtCoderClient,
         )),
         code_file_path)
     emit_info("Saved code to {}".format(code_file_path))
+    # Save problem statement
+    problem_statement_path = os.path.join(problem_dir_path, "problem.txt")
+    _make_text_file("text", problem_statement_path)
 
     # Save metadata
     metadata_path = os.path.join(problem_dir_path, "metadata.json")

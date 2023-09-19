@@ -43,11 +43,15 @@ class ProblemContent:
         self.samples = samples
         self.input_format_text = input_format_text
         self.original_html = original_html
+        self.problem_content = ""
 
     @classmethod
     def from_html(cls, html: str):
         res = ProblemContent(original_html=html)
         soup = BeautifulSoup(html, "html.parser")
+        res.problem_content = res._extract_problem_content(soup)
+        print("__________")
+        print(res.problem_content)
         res.input_format_text, res.samples = res._extract_input_format_and_samples(
             soup)
         return res
@@ -57,6 +61,13 @@ class ProblemContent:
 
     def get_samples(self) -> List[Sample]:
         return self.samples
+    
+    @staticmethod
+    def _extract_input_format_and_samples(soup) -> str:
+        str = ""
+        for e in soup.findAll("span", {"class": "lang-en"}):
+            str += e
+        return str
 
     @staticmethod
     def _extract_input_format_and_samples(soup) -> Tuple[str, List[Sample]]:
