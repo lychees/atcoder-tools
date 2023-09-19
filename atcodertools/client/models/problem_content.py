@@ -1,5 +1,5 @@
 from typing import List, Tuple, Optional
-
+import copy
 from bs4 import BeautifulSoup
 
 from atcodertools.client.models.sample import Sample
@@ -43,15 +43,15 @@ class ProblemContent:
         self.samples = samples
         self.input_format_text = input_format_text
         self.original_html = original_html
-        self.problem_content = ""
+        self.problem_statement = ""
 
     @classmethod
     def from_html(cls, html: str):
         res = ProblemContent(original_html=html)
         soup = BeautifulSoup(html, "html.parser")
-        res.problem_content = res._extract_problem_content(soup)
-        print("__________")
-        print(res.problem_content)
+        res.problem_statement = res._extract_problem_statement(soup)
+ #       print("__________")
+        print(res.problem_statement)
         res.input_format_text, res.samples = res._extract_input_format_and_samples(
             soup)
         return res
@@ -63,11 +63,19 @@ class ProblemContent:
         return self.samples
     
     @staticmethod
-    def _extract_input_format_and_samples(soup) -> str:
-        str = ""
-        for e in soup.findAll("span", {"class": "lang-en"}):
-            str += e
-        return str
+    def _extract_problem_statement(soup2) -> str:
+        soup = copy.deepcopy(soup2)
+        # Remove Japnese statements
+        for e in soup.findAll("span", {"class": "lang-ja"}):
+            e.extract()
+        tmp = soup.select('.part')[0]
+        return str(tmp.find('section'))
+                
+        #print(soup)
+        #str = ""
+        #for e in soup.findAll("div", {"class": "part", "lang-en"}):
+        #    str += e
+        #return str
 
     @staticmethod
     def _extract_input_format_and_samples(soup) -> Tuple[str, List[Sample]]:

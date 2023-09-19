@@ -143,9 +143,11 @@ def prepare_procedure(atcoder_client: AtCoderClient,
         )),
         code_file_path)
     emit_info("Saved code to {}".format(code_file_path))
+
     # Save problem statement
     problem_statement_path = os.path.join(problem_dir_path, "problem.txt")
-    _make_text_file("text", problem_statement_path)
+    _make_text_file(problem_statement_path, content.problem_statement)
+    emit_info("Saved problem statement to {}".format(problem_statement_path))
 
     # Save metadata
     metadata_path = os.path.join(problem_dir_path, "metadata.json")
